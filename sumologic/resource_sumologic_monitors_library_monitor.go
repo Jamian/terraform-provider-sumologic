@@ -1,6 +1,7 @@
 package sumologic
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -145,6 +146,17 @@ func resourceSumologicMonitorsLibraryMonitor() *schema.Resource {
 									"action_type": {
 										Type:     schema.TypeString,
 										Required: true,
+										ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+											v := val.(string)
+											switch v {
+											case
+												"WebhookAction",
+												"NamedConnectionAction":
+												return
+											}
+											errs = append(errs, fmt.Errorf("%q must be one of [WebhookAction, NamedConnectionAction], got %s", key, v))
+											return
+										},
 									},
 									"subject": {
 										Type:     schema.TypeString,
